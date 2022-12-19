@@ -1,18 +1,18 @@
-use std::time::{SystemTime};
+use chrono::{DateTime, Local};
 use std::io::stdin;
 
 struct Jot {
     short:String,
     detailed:Option<String>,
-    timestamp:SystemTime
+    timestamp:DateTime<Local>
 }
 
 impl Jot {
-    fn new(short: String, detailed: Option<String>, timestamp: SystemTime) -> Self { Self { short, detailed, timestamp } }
+    fn new(short: String, detailed: Option<String>, timestamp: DateTime<Local>) -> Self { Self { short, detailed, timestamp } }
 }
 
 fn main() {
-    let timestamp = SystemTime::now();
+    let timestamp = Local::now();
     let mut short = String::new();
 
     stdin().read_line(&mut short)
