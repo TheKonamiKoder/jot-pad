@@ -1,5 +1,4 @@
 use chrono::{DateTime, Local};
-use std::io::stdin;
 use std::env;
 
 struct Jot {
@@ -14,16 +13,18 @@ impl Jot {
 }
 
 fn main() {
+    let timestamp = Local::now();
     let args: Vec<String> = env::args().collect();
     
-    let timestamp = Local::now();
-    let mut short = String::new();
+    let cmd = &args[1];
 
-    stdin().read_line(&mut short)
-        .ok()
-        .expect("Failed to get input...");
+    let jot:Option<Jot> = match cmd.as_str() {
+        "new" => Some(Jot::new(args[2].as_str().to_string(), None, timestamp)),
+        _ => None
+    };
 
-    let jot = Jot::new(short, None, timestamp);
-
-    println!("{}\n{:?}\n{}", jot.short, jot.detailed, jot.timestamp.format("[%d-%m-%Y %H:%M:%S]"));
+    match jot {
+        Some(jot) => println!("Timestamp: {}\nShort: {}\nDetailed: {:?}", jot.timestamp.format("[%d-%m-%Y %H:%M:%S]"), jot.short, jot.detailed),
+        None => println!("JOT NOT INITIALIZED CORRECTLY")
+    }
 }
