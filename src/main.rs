@@ -1,4 +1,5 @@
 use std::time::{SystemTime};
+use std::io::stdin;
 
 struct Jot {
     short:String,
@@ -7,10 +8,18 @@ struct Jot {
 }
 
 impl Jot {
-    fn new_from_short(short:String, timestamp: SystemTime) -> Self {Self {short, detailed:None, timestamp}}
-    fn new_from_short_and_detailed(short: String, detailed: Option<String>, timestamp: SystemTime) -> Self { Self { short, detailed, timestamp } }
+    fn new(short: String, detailed: Option<String>, timestamp: SystemTime) -> Self { Self { short, detailed, timestamp } }
 }
 
 fn main() {
-    println!("Hello, world!");
+    let timestamp = SystemTime::now();
+    let mut short = String::new();
+
+    stdin().read_line(&mut short)
+        .ok()
+        .expect("Failed to get input...");
+    
+    let jot = Jot::new(short, None, timestamp);
+
+    println!("{}\n{:?}\n{:?}", jot.short, jot.detailed, jot.timestamp)
 }
