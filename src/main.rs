@@ -1,17 +1,21 @@
 use chrono::{DateTime, Local};
 use std::io::stdin;
+use std::env;
 
 struct Jot {
     short:String,
     detailed:Option<String>,
-    timestamp:DateTime<Local>
+    timestamp:DateTime<Local>,
+    id:i64
 }
 
 impl Jot {
-    fn new(short: String, detailed: Option<String>, timestamp: DateTime<Local>) -> Self { Self { short, detailed, timestamp } }
+    fn new(short: String, detailed: Option<String>, timestamp: DateTime<Local>) -> Self { Self { short, detailed, timestamp, id:0 } }
 }
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
+    
     let timestamp = Local::now();
     let mut short = String::new();
 
