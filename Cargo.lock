@@ -142,7 +142,7 @@ checksum = "fad582f4b9e86b6caa621cabeb0963332d92eea04729ab12892c2533951e6440"
 
 [[package]]
 name = "jot-pad"
-version = "0.3.3"
+version = "0.3.6"
 dependencies = [
  "chrono",
  "serde",
