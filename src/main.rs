@@ -1,18 +1,23 @@
-use chrono::{DateTime, Local};
 use std::env;
+use std::fs;
+use chrono::{DateTime, Local};
+use serde::{Deserialize};
 
+#[derive(Debug, Deserialize)]
 struct Jot {
     short:String,
     detailed:Option<String>,
-    timestamp:DateTime<Local>,
+    timestamp:String,
     id:i64
 }
 
 impl Jot {
-    fn new(short: String, detailed: Option<String>, timestamp: DateTime<Local>) -> Self { Self { short, detailed, timestamp, id:0 } }
+    fn new(short: String, detailed: Option<String>, timestamp: DateTime<Local>) -> Self { Self { short, detailed, timestamp:timestamp.format("[%d-%m-%Y %H:%H:%S]").to_string(), id:0 } }
 }
 
 fn main() {
+    
+
     let timestamp = Local::now();
     let args: Vec<String> = env::args().collect();
     
@@ -24,7 +29,7 @@ fn main() {
     };
 
     match jot {
-        Some(jot) => println!("Timestamp: {}\nShort: {}\nDetailed: {:?}", jot.timestamp.format("[%d-%m-%Y %H:%M:%S]"), jot.short, jot.detailed),
+        Some(jot) => println!("Timestamp: {}\nShort: {}\nDetailed: {:?}", jot.timestamp, jot.short, jot.detailed),
         None => println!("JOT NOT INITIALIZED CORRECTLY")
     }
 }

@@ -1,11 +1,12 @@
 [package]
 name = "jot-pad"
-version = "0.2.0"
+version = "0.3.3"
 edition = "2021"
 authors = ["Pratyush Joshi"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chrono = "0.4.23"
+chrono = "0.4.25"
+serde = { version = "1.0.151", features = ["derive"] }
 serde_json = "1.0.91"
