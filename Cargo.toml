@@ -9,4 +9,5 @@ authors = ["Pratyush Joshi"]
 [dependencies]
 chrono = "0.4.23"
 serde = { version = "1.0.151", features = ["derive"] }
+rand = "0.8.5"
 serde_json = "1.0.91"
