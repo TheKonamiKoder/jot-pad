@@ -51,7 +51,7 @@ impl std::fmt::Display for Jot {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(
             format!(
-                "{short}\n{detailed}\nJot created at: {timestamp}\nid: {id}\n\n",
+                "\n{short}\n{detailed}\nJot created at: {timestamp}\nid: {id}\n",
                 short=self.short,
                 detailed = self.detailed.clone().unwrap_or("".to_string()),
                 timestamp = self.timestamp,
@@ -75,7 +75,7 @@ fn main() {
         "new" => {
             jots.push(
                 Jot::new(
-                    args[2].clone(),
+                    args[2].to_string(),
                     None,
                     Jot::gen_timestamp(),
                     Jot::gen_random_id(&jots)
@@ -83,10 +83,11 @@ fn main() {
             );
         },
         "del" => {
-            jots = jots
-                .into_iter()
-                .filter(|jot| jot.id != *&args[2].parse::<u64>().unwrap())
-                .collect();
+            if args[2] == "*".to_string() {
+                jots.retain(|_| false);
+            } else {
+                jots.retain(|jot| jot.id != args[2].parse::<u64>().unwrap().clone());
+            }
         },
         "log" => {
             for jot in jots.iter() {
