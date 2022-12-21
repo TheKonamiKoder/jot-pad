@@ -1,5 +1,4 @@
 use std::env;
-use std::fs;
 use chrono::{DateTime, Local};
 use rand::Rng;
 use serde::{Serialize, Deserialize};
