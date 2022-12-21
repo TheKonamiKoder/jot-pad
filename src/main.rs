@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fmt::Write};
 use chrono::{Local};
 use rand::Rng;
 use serde::{Serialize, Deserialize};
@@ -47,6 +47,20 @@ impl Jot {
     }
 }
 
+impl std::fmt::Display for Jot {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(
+            format!(
+                "{short}\n{detailed}\nJot created at: {timestamp}\nid: {id}\n\n",
+                short=self.short,
+                detailed = self.detailed.clone().unwrap_or("".to_string()),
+                timestamp = self.timestamp,
+                id = self.id
+            ).as_ref()
+        )
+    }
+}
+
 const JOTS_STORAGE_FILE:&str = "C:/Users/44773/Coding Projects/jot-pad/src/jots.json";
 
 fn main() {
@@ -73,6 +87,11 @@ fn main() {
                 .into_iter()
                 .filter(|jot| jot.id != *&args[2].parse::<u64>().unwrap())
                 .collect();
+        },
+        "log" => {
+            for jot in jots.iter() {
+                print!("{}", jot);
+            }
         },
         _ => println!("{} not a valid command!", cmd)
     }
