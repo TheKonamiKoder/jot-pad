@@ -1,4 +1,4 @@
-use std::{env, fmt::Write};
+use std::{env};
 use chrono::{Local};
 use rand::Rng;
 use serde::{Serialize, Deserialize};
