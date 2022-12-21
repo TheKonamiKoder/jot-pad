@@ -1,5 +1,5 @@
 use std::env;
-use chrono::{DateTime, Local};
+use chrono::{Local};
 use rand::Rng;
 use serde::{Serialize, Deserialize};
 use serde_json;
@@ -28,13 +28,20 @@ impl Jot {
     }
     
     fn gen_random_id(jots:&Vec<Jot>) -> u64 {
+        let mut unique = true;
         loop {
             let id = rand::thread_rng().gen::<u64>();
     
             for jot in jots.iter() {
                 if jot.id == id {
-                    return id;
+                    unique = false;
+                } else {
+                    unique = true;
                 }
+            }
+
+            if unique {
+                return id;
             }
         }
     }
