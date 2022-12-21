@@ -68,6 +68,12 @@ fn main() {
                 )
             );
         },
+        "del" => {
+            jots = jots
+                .into_iter()
+                .filter(|jot| jot.id != *&args[2].parse::<u64>().unwrap())
+                .collect();
+        },
         _ => println!("{} not a valid command!", cmd)
     }
 
