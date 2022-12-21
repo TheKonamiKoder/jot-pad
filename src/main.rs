@@ -40,7 +40,7 @@ impl Jot {
     }
 }
 
-const JOTS_STORAGE_FILE:&str = "jots.json";
+const JOTS_STORAGE_FILE:&str = "C:/Users/44773/Coding Projects/jot-pad/src/jots.json";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
