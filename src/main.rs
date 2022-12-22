@@ -81,6 +81,7 @@ fn main() {
                     Jot::gen_random_id(&jots)
                 )
             );
+            println!("Adding your new Jot...");
         },
         "del" => {
             if args[2] == "*".to_string() {
