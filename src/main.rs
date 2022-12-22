@@ -1,11 +1,10 @@
-use std::{env};
-use chrono::{Local};
-use rand::Rng;
-use serde::{Serialize, Deserialize};
+use chrono;
+use serde;
 use serde_json;
-use rand;
+use rand::Rng;
+use clap::{Parser, Subcommand};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 struct Jot {
     short:String,
     detailed:Option<String>,
@@ -24,7 +23,7 @@ impl Jot {
     }
 
     fn gen_timestamp() -> String {
-        Local::now().format("%d-%m-%Y %H:%M:%S").to_string()
+        chrono::Local::now().format("%d-%m-%Y %H:%M:%S").to_string()
     }
     
     fn gen_random_id(jots:&Vec<Jot>) -> u64 {
@@ -59,43 +58,98 @@ impl std::fmt::Display for Jot {
             ).as_ref()
         )
     }
+} 
+
+/// A simple note taker (a jotter) :D
+#[derive(Parser)]
+#[clap(author = "Pratyush Joshi", version, about)]
+struct Args {
+    #[clap(subcommand)]
+    command: Commands
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Adds a jot to your jot pad
+    Add {
+        /// A quick note for the Jot - could just be a few words or two...
+        short: String,
+
+        /// A more detailed description of the jot.
+        #[clap(short, long, default_value=None)]
+        detailed: Option<String>
+    },
+    /// Deletes a Jot from your jot pad
+    Del {
+        /// The id of the Jot which is to be deleted. You can see the ids of the jots by running command `jot-pad log`
+        #[clap(default_value=None)]
+        id:Option<u64>
+    },
+    /// Logs all the Jots to the terminal window
+    Log {}
 }
 
 const JOTS_STORAGE_FILE:&str = "C:/Users/44773/Coding Projects/jot-pad/src/jots.json";
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let cmd = &args[1];
+    let args = Args::parse();
 
     let mut jots:Vec<Jot> = serde_json::from_str(
         &std::fs::read_to_string(JOTS_STORAGE_FILE).unwrap()
     ).expect("There was an error with opening the JSON file...");
 
-    match cmd.as_str() {
-        "new" => {
+    match args.command {
+        Commands::Add { short, detailed } => {
             jots.push(
                 Jot::new(
-                    args[2].to_string(),
-                    None,
+                    short,
+                    detailed,
                     Jot::gen_timestamp(),
                     Jot::gen_random_id(&jots)
                 )
             );
             println!("Adding your new Jot...");
         },
-        "del" => {
-            if args[2] == "*".to_string() {
-                jots.retain(|_| false);
-            } else {
-                jots.retain(|jot| jot.id != args[2].parse::<u64>().unwrap().clone());
+        Commands::Del { id } => {
+            match id {
+                Some(id) => {
+                    // The length of the vector before, to see if the id actually exists or not.
+                    let tmp_len = jots.len();
+                    jots.retain(|jot| jot.id != id);
+                    if jots.len() == tmp_len {
+                        println!("There is no jot with that name!");                        
+                    } 
+                    println!("Jot with id:{id} has been deleted", id=id);
+                },
+                None => {
+                    loop {
+                        let mut confirmation = String::new();
+                        
+                        println!("Are you sure you want to delete all of your jots? (y/n)");
+
+                        std::io::stdin()
+                            .read_line(&mut confirmation)
+                            .expect("Failed to get input...");
+                        
+                        if confirmation.trim().to_ascii_lowercase().as_str() == "y" {
+                            jots.retain(|_| false);
+                            println!("Deleted all Jots.");
+                            break;
+                        } else if confirmation.trim().to_ascii_lowercase().as_str() == "n"  {
+                            println!("Phew... that was a close one :)");
+                            break;
+                        } else {
+                            println!("Sorry - didn't understand the input...")
+                        }
+                    }
+                }
             }
         },
-        "log" => {
+        Commands::Log {} => {
             for jot in jots.iter() {
                 print!("{}", jot);
             }
         },
-        _ => println!("{} not a valid command!", cmd)
     }
 
     std::fs::write(
