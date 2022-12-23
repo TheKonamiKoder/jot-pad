@@ -1,9 +1,15 @@
 [package]
 name = "jot-pad"
+description = "A simple command line tool to write simple notes (or Jots)."
 version = "0.4.7"
-edition = "2021"
 authors = ["Pratyush Joshi"]
-
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/TheKonamiKoder/jot-pad"
+repository = "https://github.com/TheKonamiKoder/jot-pad"
+keywords = ["cli", "notes"]
+categories = ["command-line-utilities"]
+edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
