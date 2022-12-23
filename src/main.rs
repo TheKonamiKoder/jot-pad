@@ -1,6 +1,6 @@
-use chrono;
-use serde;
-use serde_json;
+use chrono;                     
+use serde;                      
+use serde_json;                 
 use rand::Rng;
 use clap::{Parser, Subcommand};
 
@@ -89,14 +89,24 @@ enum Commands {
     Log {}
 }
 
-const JOTS_STORAGE_FILE:&str = "C:/Users/44773/Coding Projects/jot-pad/src/jots.json";
+const JOTS_STORAGE_FILE:&str = "JOTS_STORAGE";
 
 fn main() {
     let args = Args::parse();
 
     let mut jots:Vec<Jot> = serde_json::from_str(
-        &std::fs::read_to_string(JOTS_STORAGE_FILE).unwrap()
-    ).expect("There was an error with opening the JSON file...");
+        &std::fs::read_to_string(
+            match std::env::var(JOTS_STORAGE_FILE) {
+                Ok(path) => path,
+                Err(_) => {
+                    eprintln!("Could not access the JOTS_STORAGE_FILE. Are you sure that you added it to path?");
+                    "jots_store".to_string()    // Should panic before it returns jots_store
+                }
+            }
+        )
+        .unwrap()
+    )
+    .expect("There was an error with opening the JSON file...");
 
     match args.command {
         Commands::Add { short, detailed } => {
