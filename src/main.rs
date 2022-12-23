@@ -89,13 +89,15 @@ enum Commands {
     Log {}
 }
 
-const JOTS_STORAGE_FILE:&str = "jots.json";
-
 fn main() {
+    let mut jots_storage_location = std::env::current_exe().unwrap().parent().unwrap().to_path_buf();
+    jots_storage_location.push("jots.json");
+
+    //println!("{}", jots_storage_location.display()); 
     let args = Args::parse();
 
     let mut jots:Vec<Jot> = serde_json::from_str(
-        &std::fs::read_to_string(JOTS_STORAGE_FILE)
+        &std::fs::read_to_string(jots_storage_location.clone())
         .unwrap()
     )
     .expect("There was an error with opening the JSON file...");
@@ -155,7 +157,7 @@ fn main() {
     }
 
     std::fs::write(
-        JOTS_STORAGE_FILE, 
+        jots_storage_location.clone(), 
         serde_json::to_string_pretty(&jots).unwrap()
     ).unwrap();
 
