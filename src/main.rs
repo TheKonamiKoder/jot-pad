@@ -89,21 +89,13 @@ enum Commands {
     Log {}
 }
 
-const JOTS_STORAGE_FILE:&str = "JOTS_STORAGE";
+const JOTS_STORAGE_FILE:&str = "jots.json";
 
 fn main() {
     let args = Args::parse();
 
     let mut jots:Vec<Jot> = serde_json::from_str(
-        &std::fs::read_to_string(
-            match std::env::var(JOTS_STORAGE_FILE) {
-                Ok(path) => path,
-                Err(_) => {
-                    eprintln!("Could not access the JOTS_STORAGE_FILE. Are you sure that you added it to path?");
-                    "jots_store".to_string()    // Should panic before it returns jots_store
-                }
-            }
-        )
+        &std::fs::read_to_string(JOTS_STORAGE_FILE)
         .unwrap()
     )
     .expect("There was an error with opening the JSON file...");
